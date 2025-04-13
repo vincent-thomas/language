@@ -3,7 +3,8 @@ use crate::lexer::{Lexer, Tokens};
 use crate::parser::Parseable;
 use crate::parser::expressions::BlockExpression;
 
-pub(super) struct LoopStatement {
+#[derive(Debug)]
+pub struct LoopStatement {
   block: BlockExpression,
 }
 impl<'a> Parseable<'a> for LoopStatement {

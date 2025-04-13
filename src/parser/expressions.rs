@@ -1,6 +1,6 @@
 pub use block::BlockExpression;
 
-use crate::lexer::Lexer;
+use crate::lexer::{Lexer, LexingError, Tokens};
 
 use super::Parseable;
 
@@ -12,6 +12,20 @@ pub(super) enum Expression {
 }
 
 impl Expression {
+  pub fn parse(lexer: &mut Lexer) -> Option<Result<Expression, LexingError>> {
+    let token = match &lexer.peek()?.0 {
+      Ok(value) => value,
+      Err(err) => return Some(Err(err.clone())),
+    };
+
+    // Ok: TEMP
+    let result = Ok(match token {
+      Tokens::BlockOpen => Self::block(lexer),
+      _ => todo!(),
+    });
+
+    Some(result)
+  }
   //pub fn loop_(lexer: &mut Lexer) -> Self {
   //  Self::LoopStatement(r#loop::LoopStatement::parse_with_lexer(lexer))
   //}

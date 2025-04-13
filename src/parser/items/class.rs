@@ -2,23 +2,23 @@ use std::collections::HashMap;
 
 use crate::{
   lexer::{Lexer, Tokens},
-  parser::{Ident, Parseable},
+  parser::{Ident, Parseable, TypeDec},
 };
 
 #[derive(Debug)]
 pub(super) struct ClassItem {
   ident: Ident,
-  data: HashMap<Ident, /*For now*/ ()>, //block: BlockExpression,
+  data: HashMap<Ident, TypeDec>, //block: BlockExpression,
 }
 
 impl<'a> Parseable<'a> for ClassItem {
   fn parse_with_lexer(lexer: &mut Lexer<'a>) -> Self {
     assert_eq!(lexer.next().unwrap().0.unwrap(), Tokens::Class);
-    //
+
     let Tokens::Ident(ident) = lexer.next().unwrap().0.unwrap() else {
       panic!("expected ident");
     };
-    //
+
     assert_eq!(lexer.next().unwrap().0.unwrap(), Tokens::BlockOpen);
 
     let mut data_builder = HashMap::default();

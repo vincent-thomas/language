@@ -5,7 +5,7 @@ mod statements;
 use items::Item;
 use statements::Statement;
 
-use crate::lexer::{Lexer, Tokens};
+use crate::lexer::Lexer;
 
 pub struct Parser<'a> {
   lexer: Lexer<'a>,
@@ -20,6 +20,9 @@ pub type TypeDec = ();
 
 #[derive(Debug)]
 struct ReturnType(Option<TypeDec>);
+
+#[derive(Debug)]
+pub struct AST(Vec<Item>);
 
 /// TODO: nice
 #[derive(Clone, PartialEq, Eq, Debug, Hash)]
@@ -42,28 +45,20 @@ impl<'a> Parser<'a> {
     Self { lexer }
   }
 
-  pub fn parse(mut self) -> Vec<Item> {
+  pub fn parse(mut self) -> AST {
     // Parse global scope
-    let mut testing: Vec<Item> = Vec::new();
+    let mut items: Vec<Item> = Vec::new();
 
-    while let Some((token, range)) = self.lexer.peek() {
-      match token.clone() {
-        Ok(token) => testing.push(self.parse_item(token)),
-        Err(err) => {
-          panic!("error: {:#?} {:#?}", err, range)
-        }
-      }
+    while let Some(item) = Item::parse(&mut self.lexer) {
+      match item {
+        Ok(value) => items.push(value),
+        Err(err) => todo!("error handling: {:#?}", err),
+      };
     }
-    testing
+
+    AST(items)
   }
 
-  fn parse_item(&mut self, token: Tokens) -> Item {
-    match token {
-      Tokens::Fn => Item::func(&mut self.lexer),
-      Tokens::Class => Item::class(&mut self.lexer),
-      _ => todo!(),
-    }
-  }
   //fn walk_based_on_token(&mut self, token: Tokens<'_>) -> Statement {
   //  match token {
   //    Tokens::FnDec => Statement::func(&mut self.lexer),

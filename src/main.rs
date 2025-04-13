@@ -17,14 +17,12 @@ fn main() {
       verynice string,
     }
     fn main() {
-      string testing = verynice;
+    let testing = testing;
     }
   "#,
   );
 
-  let parser = Parser::new(lexer);
-
-  let result = parser.parse();
+  let result = Parser::new(lexer).parse();
 
   println!("{:#?}", result);
 

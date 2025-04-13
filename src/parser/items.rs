@@ -1,4 +1,4 @@
-use crate::lexer::Lexer;
+use crate::lexer::{Lexer, LexingError, Tokens};
 
 use super::Parseable;
 
@@ -12,6 +12,21 @@ pub enum Item {
 }
 
 impl Item {
+  pub fn parse(lexer: &mut Lexer) -> Option<Result<Item, LexingError>> {
+    let token = match &lexer.peek()?.0 {
+      Ok(value) => value,
+      Err(err) => return Some(Err(err.clone())),
+    };
+
+    // Ok: TODO remove to support errors.
+    let value = Ok(match token {
+      Tokens::Fn => Self::func(lexer),
+      Tokens::Class => Self::class(lexer),
+      _ => todo!(),
+    });
+
+    Some(value)
+  }
   //pub fn loop_(lexer: &mut Lexer) -> Self {
   //  Self::LoopStatement(r#loop::LoopStatement::parse_with_lexer(lexer))
   //}

@@ -63,6 +63,10 @@ pub enum Tokens {
   // Ident
   #[regex("[a-zA-Z]+", |item| Ident::new(item.slice()))]
   Ident(Ident),
+
+  // Operators
+  #[token("let")]
+  Let,
 }
 
 pub struct Lexer<'a>(Peekable<SpannedIter<'a, Tokens>>);
